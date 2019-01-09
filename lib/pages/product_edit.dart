@@ -80,36 +80,36 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildSubmitButton(BuildContext context) {
-//    return ScopedModelDescendant<ProductsModel>(
-//      builder:(context,child,model) {
-//        return RaisedButton(
-//          child: Text('Save'),
-//          textColor: Colors.white,
-//          onPressed: ()=>_submitForm(model.addProduct,model.updateProduct) ,
-//        );
-//      },
-//    );
-
-    return ScopedModel<ProductsModel>(
-      model: ProductsModel(),
-      child: Column(
-        children: <Widget>[
-          Text('uppper text'),
-          ScopedModelDescendant<ProductsModel>(builder:
-              (BuildContext context, Widget child, ProductsModel model) {
-            return RaisedButton(
-              child: Text('Save'),
-              textColor: Colors.white,
-              onPressed: () {
-                _submitForm(model.addProduct, model.updateProduct);
-
-                print('saving button  ' + model.products.toString());
-              },
-            );
-          })
-        ],
-      ),
+    return ScopedModelDescendant<ProductsModel>(
+      builder:(context,child,model) {
+        return RaisedButton(
+          child: Text('Save'),
+          textColor: Colors.white,
+          onPressed: ()=>_submitForm(model.addProduct,model.updateProduct) ,
+        );
+      },
     );
+
+//    return ScopedModel<ProductsModel>(
+//      model: ProductsModel(),
+//      child: Column(
+//        children: <Widget>[
+//          Text('uppper text'),
+//          ScopedModelDescendant<ProductsModel>(builder:
+//              (BuildContext context, Widget child, ProductsModel model) {
+//            return RaisedButton(
+//              child: Text('Save'),
+//              textColor: Colors.white,
+//              onPressed: () {
+//                _submitForm(model.addProduct, model.updateProduct);
+//
+//                print('saving button  ' + model.products.toString());
+//              },
+//            );
+//          })
+//        ],
+//      ),
+//    );
 
   }
 
@@ -144,6 +144,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   void _submitForm(Function addProduct, Function updateProduct) {
     print('submit form reached');
+
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -157,7 +158,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
           description: _formData['description'],
           price: _formData['price'],
           image: _formData['image']));
-    } else {
+    }
+    else {
       updateProduct(
           widget.productIndex,
           Product(

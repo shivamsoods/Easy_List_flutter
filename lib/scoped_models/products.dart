@@ -17,7 +17,7 @@ class ProductsModel extends Model {
 
   void addProduct(Product product) {
     _products.add(product);
-    print('added a product');
+//    print('added a product');
   }
 
   void updateProduct(int index, Product product) {
