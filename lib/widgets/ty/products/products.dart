@@ -33,18 +33,6 @@ class Products extends StatelessWidget {
           },
         );
 
-//    return ScopedModel<ProductsModel>(
-//      model: ProductsModel(),
-//      child: Column(
-//        children: <Widget>[
-//          Text('list upper'),
-//          ScopedModelDescendant<ProductsModel>(builder:
-//              (BuildContext context, Widget child, ProductsModel model) {
-//            print('product in p/p.d ' + model.products.toString());
-//            return _buildProductList(model.products, context);
-//          }),
-//        ],
-//      ),
-//    );
+
   }
 }

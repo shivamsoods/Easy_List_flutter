@@ -5,12 +5,15 @@ import 'package:flutter_course/widgets/ty/ui_elements/title_default.dart';
 import 'package:flutter_course/widgets/ty/products/address_tag.dart';
 import 'package:flutter_course/models/product.dart';
 
+import 'package:flutter_course/scoped_models/products.dart';
+import 'package:scoped_model/scoped_model.dart';
+
 class ProductCard extends StatelessWidget {
   final Product product;
   final int productIndex;
   final BuildContext context;
 
-  ProductCard(this.product, this.productIndex,this.context);
+  ProductCard(this.product, this.productIndex, this.context);
 
   Widget _buildTitlePriceRow() {
     return Container(
@@ -38,11 +41,17 @@ class ProductCard extends StatelessWidget {
           onPressed: () => Navigator.pushNamed<bool>(
               context, '/product/' + productIndex.toString()),
         ),
-        IconButton(
-          icon: Icon(Icons.favorite_border),
-          color: Colors.red,
-          onPressed: () => Navigator.pushNamed<bool>(
-              context, '/product/' + productIndex.toString()),
+        ScopedModelDescendant<ProductsModel>(
+          builder: (BuildContext context, Widget child, ProductsModel model) {
+            return IconButton(
+              icon: Icon(model.products[productIndex].isFavourite?Icons.favorite:Icons.favorite_border),
+              color: Colors.red,
+              onPressed: () {
+                model.selectProduct(productIndex);
+                model.toggleProductFavouriteStatus();
+              },
+            );
+          },
         )
       ],
     );
@@ -60,6 +69,5 @@ class ProductCard extends StatelessWidget {
         ],
       ),
     );
-
   }
 }
