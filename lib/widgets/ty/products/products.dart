@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_course/widgets/ty/products/product_card.dart';
-import 'package:flutter_course/scoped_models/products.dart';
+import 'package:flutter_course/scoped_models/main.dart';
 import 'package:flutter_course/models/product.dart';
 
 import 'package:scoped_model/scoped_model.dart';
@@ -19,7 +19,6 @@ class Products extends StatelessWidget {
     } else {
       productCards = Container(child: Text('List is empty  bro!'));
     }
-    print('product card just before returning main page list');
     return productCards;
   }
 
@@ -27,9 +26,9 @@ class Products extends StatelessWidget {
   Widget build(BuildContext context) {
     print('[Products Widget] build()');
 
-        return ScopedModelDescendant<ProductsModel>(
-          builder: (BuildContext context,Widget child,ProductsModel model) {
-            return _buildProductList(model.products);
+        return ScopedModelDescendant<MainModel>(
+          builder: (BuildContext context,Widget child,MainModel model) {
+            return _buildProductList(model.displayedProducts);
           },
         );
 
