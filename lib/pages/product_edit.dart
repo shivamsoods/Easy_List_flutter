@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:flutter_course/models/product.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -73,7 +74,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
   Widget _buildSubmitButton(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (context, child, model) {
-        return RaisedButton(
+        return model.isLoading?
+        Center(child: CircularProgressIndicator(),)
+            :        RaisedButton(
           child: Text('Save'),
           textColor: Colors.white,
           onPressed: () => _submitForm(model.addProduct, model.updateProduct,model.selectProduct,
@@ -125,7 +128,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
            _formData['title'],
           _formData['description'],
           _formData['image'],
-          _formData['price']);
+          _formData['price']
+      ).then((_)=>Navigator.pushReplacementNamed(context, '/products').then((_)=>setSelectedProduct(null)));
     } else {
       updateProduct(
           _formData['title'],
@@ -134,7 +138,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
           _formData['price']);
     }
 
-    Navigator.pushReplacementNamed(context, '/products').then(()=>setSelectedProduct(null););
+
   }
 
   @override
