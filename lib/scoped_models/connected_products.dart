@@ -241,7 +241,7 @@ _selProductId=null;
 }
 
 class UserModel extends ConnectedProductsModel{
-
+  Timer _authTimer;
   User get user {return _authenticatedUser;}
 
   Future<Map<String,dynamic>> authenticate(String email,String password,[AuthMode mode=AuthMode.Login]) async{
@@ -275,11 +275,16 @@ class UserModel extends ConnectedProductsModel{
       hasError=false;
       message='Authentication success!';
       _authenticatedUser=User(id: responseData['localId'], email: email, token: responseData['idToken']);
+      setAuthTimeout(int.parse(responseData['expiresIn']));
 
+      final DateTime now = DateTime.now();
+      final DateTime expiryTime =  now.add(Duration(seconds: int.parse(responseData['expiresIn'])));
       final SharedPreferences prefs =await SharedPreferences.getInstance();
       prefs.setString('token', responseData['idToken']);
       prefs.setString('userEmail',email);
       prefs.setString('userId', responseData['localId']);
+      prefs.setString('expiryTime', expiryTime.toIso8601String() );
+
 
 
     }
@@ -307,28 +312,40 @@ class UserModel extends ConnectedProductsModel{
     void autoAuthenticate()async{
      final SharedPreferences prefs=await  SharedPreferences.getInstance();
      final String token =  prefs.getString('token');
-     if(token!=null){
+     final String expiryTimeString=prefs.getString('expiryTime');
 
+     if(token!=null){
+       final DateTime now=DateTime.now();
+       final parsedExpiryTime=DateTime.parse(expiryTimeString);
+       if(parsedExpiryTime.isBefore(now)){
+         _authenticatedUser=null;
+         notifyListeners();
+         return;
+       }
        final String userEmail=prefs.getString('userEmail');
        final String userId=prefs.getString('userId');
-
+       final int tokenLifeSpan= parsedExpiryTime.difference(now).inSeconds;
        _authenticatedUser=User(id: userId, email: userEmail, token: token);
+       setAuthTimeout(tokenLifeSpan);
        notifyListeners();
      }
     }
 
     void logout()async{
     _authenticatedUser=null;
+    _authTimer.cancel();
     final SharedPreferences prefs=await  SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('userEmail');
     prefs.remove('userId');
+    }
 
-
-
+    void setAuthTimeout(int time){
+    _authTimer=Timer(Duration(seconds: time),logout);
 
     }
-  }
+
+}
 
 class UtilityModel extends ConnectedProductsModel{
   bool get isLoading{
