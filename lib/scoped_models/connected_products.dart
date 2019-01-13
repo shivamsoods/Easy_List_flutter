@@ -9,7 +9,7 @@ import 'package:http/http.dart'as http;
 class ConnectedProductsModel extends Model{
   List<Product> _products = [];
   User _authenticatedUser;
-  int  _selProductIndex;
+  String  _selProductId;
   bool _isLoading=false;
 
   Future<Null> addProduct(String title,String description String image,double price) {
@@ -62,6 +62,12 @@ class ProductsModel extends ConnectedProductsModel{
     return _showFavourites;
   }
 
+  int get  selectedProductIndex{
+    return _products.indexWhere((Product product){
+    return product.id==_selProductId;
+  });
+  }
+
 
 
   Future<Null> updateProduct(String title,String description String image,double price) {
@@ -89,6 +95,11 @@ class ProductsModel extends ConnectedProductsModel{
   userEmail: selectedProduct.userEmail,
   userId: selectedProduct.userId);
 
+        final int selectedProductIndex= _products.indexWhere((Product product){
+          return product.id==_selProductId;
+  });
+
+
   _products[selectedProductIndex] = updatedProduct;
   notifyListeners();
 
@@ -101,8 +112,10 @@ class ProductsModel extends ConnectedProductsModel{
   void deleteProduct() {
     _isLoading=true;
     final deletedProductId=selectedProduct.id;
+
+
     _products.removeAt(selectedProductIndex);
-    _selProductIndex=null;
+    _selProductId=null;
     notifyListeners();
     http.delete('https://flutter-course-443f7.firebaseio.com/products/$deletedProductId.json')
         .then((http.Response response){
@@ -130,7 +143,8 @@ class ProductsModel extends ConnectedProductsModel{
         return;
       }
       productListData.forEach((String productId, dynamic productData){
-        final Product product=  Product(id:productId
+        final Product product=  Product(
+            id:productId
             ,title: productData['title']
             , description:productData['description']
             , image: productData['image'],
@@ -147,20 +161,21 @@ notifyListeners();
 
 
   }
-  void selectProduct(int index) {
-    _selProductIndex = index;
+  void selectProduct(String productId) {
+    _selProductId = productId;
     notifyListeners();
   }
 
-  int get selectedProductIndex {
-    return _selProductIndex;
+  String get selectedProductId {
+    return _selProductId;
   }
 
   void toggleProductFavouriteStatus() {
     final bool isCurrentlyFavourite = selectedProduct.isFavourite;
     final bool newFavouriteStatus = !isCurrentlyFavourite;
 
-    final Product updatedProduct = Product(id: 'ids',
+    final Product updatedProduct = Product(
+        id: selectedProduct.id,
         title: selectedProduct.title,
         description: selectedProduct.description,
         price: selectedProduct.price,
@@ -175,10 +190,12 @@ notifyListeners();
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (selectedProductId == null) {
       return null;
     }
-    return _products[selectedProductIndex];
+    return _products.firstWhere((Product product){
+      return product.id==_selProductId;
+    });
   }
 
   void toggleDisplayMode() {
