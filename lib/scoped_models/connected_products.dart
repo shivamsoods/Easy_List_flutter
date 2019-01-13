@@ -253,9 +253,22 @@ class UserModel extends ConnectedProductsModel{
    headers:{'Content-Type':'application/json'});
 
    print(response.body);
+final Map<String,dynamic> responseData= json.decode(response.body);
+ bool hasError=true;
+ String message='Something went wrong';
+   if(responseData.containsKey('idToken')){
+     hasError=false;
+     message='Authentication success!';
+   }
+   else if(responseData['error']['message']=='EMAIL_EXISTS'){
+message=' $email already exists';
+   }
+   else{
+     message='Something went wrong';
+   }
    return {
-     'success':true,
-     'message':'Authentication success!'
+     'success':!hasError,
+     'message':message
    };
 
    }

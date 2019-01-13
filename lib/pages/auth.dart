@@ -91,20 +91,37 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _submitForm(Function login,Function signup) async{
+  void _submitForm(Function login, Function signup) async {
     if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
       return;
     }
     _formKey.currentState.save();
 
-    if(_authMode==AuthMode.Login){
+    if (_authMode == AuthMode.Login) {
       login(_formData['email'], _formData['password']);
-      }else{
-      final Map<String,dynamic>successInformation=await signup(_formData['email'], _formData['password']);
+    } else {
+      final Map<String, dynamic> successInformation =
+          await signup(_formData['email'], _formData['password']);
 
-      if(successInformation['success']){
+      if (successInformation['success']) {
         Navigator.pushReplacementNamed(context, '/products');
-
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('An error occured'),
+                content: Text(successInformation['message']),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Okay'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
       }
     }
   }
@@ -170,7 +187,7 @@ class _AuthPageState extends State<AuthPage> {
                           child: Text(
                               _authMode == AuthMode.Login ? 'LOGIN' : 'SIGNUP'),
                           onPressed: () {
-                            _submitForm(model.login,model.signup);
+                            _submitForm(model.login, model.signup);
                           },
                         );
                       },
