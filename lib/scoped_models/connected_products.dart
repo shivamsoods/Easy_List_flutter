@@ -6,31 +6,53 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart'as http;
 
-class ConnectedProductsModel extends Model{
+class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _authenticatedUser;
-  String  _selProductId;
-  bool _isLoading=false;
+  String _selProductId;
+  bool _isLoading = false;
 
-  Future<bool> addProduct(String title,String description String image,double price) {
-    _isLoading=true;
-    notifyListeners();
+  Future<bool> addProduct
 
-    final Map<String,dynamic> productData={'title':title,
-    'description':description,
-    'image':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaB5OgTv7gLFsVgGHqrJDW8BhWJiiFoJZutVXXKPGM-s0cXCZ',
-    'price':price,'userId': _authenticatedUser.id,'userEmail':_authenticatedUser.email};
+  (
 
-    return http.post('https://flutter-course-443f7.firebaseio.com/products.json',body:json.encode(productData))
-      .then((http.Response response){
+  String title, String
 
-        if(response.statusCode!=200 && response.statusCode!=201){
-          _isLoading=false;
-          notifyListeners();
-          return false;
+  description String
+
+  image
+
+  ,
+
+  double price
+
+  )
+
+  async
+
+  {
+  _isLoading=true;
+  notifyListeners();
+
+  final Map<String, dynamic> productData={
+  'title':title,
+  'description':description,
+  'image':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaB5OgTv7gLFsVgGHqrJDW8BhWJiiFoJZutVXXKPGM-s0cXCZ',
+  'price':price, 'userId': _authenticatedUser.id, 'userEmail':_authenticatedUser.email
+  };
+
+
+  try{
+  final http.Response response=await http.post('https://flutter-course-443f7.firebaseio.com/products.json', body:json.encode(productData));
+
+
+  if(response.statusCode!=200 && response.statusCode!=201){
+  _isLoading=false;
+  notifyListeners();
+  return false;
   }
-      final Map<String,dynamic> responseData=json.decode(response.body);
-  final Product newProduct= Product(id:responseData['name'],title: title, description: description,
+  final Map<String, dynamic> responseData=json.decode(response.body);
+  final Product newProduct= Product(id:responseData['name'], title: title, description: description,
   image: image,
   price: price,
   userEmail: _authenticatedUser.email,
@@ -38,11 +60,18 @@ class ConnectedProductsModel extends Model{
   _products.add(newProduct);
   notifyListeners();
   return true;
-  });
-
-
   }
+  catch(error){
+    _isLoading=false;
+          notifyListeners();
+          return false;
+
+          }
+  }
+
+
 }
+
 
 class ProductsModel extends ConnectedProductsModel{
 
@@ -74,7 +103,7 @@ class ProductsModel extends ConnectedProductsModel{
 
 
 
-  Future<Null> updateProduct(String title,String description String image,double price) {
+  Future<bool> updateProduct(String title,String description String image,double price) {
     _isLoading=true;
     notifyListeners();
 
@@ -106,14 +135,19 @@ class ProductsModel extends ConnectedProductsModel{
 
   _products[selectedProductIndex] = updatedProduct;
   notifyListeners();
-
+return true;
+  })
+      .catchError((error){
+  _isLoading=false;
+  notifyListeners();
+  return false;
   });
 
 
 
   }
 
-  void deleteProduct() {
+  Future<bool> deleteProduct() {
     _isLoading=true;
     final deletedProductId=selectedProduct.id;
 
@@ -121,11 +155,17 @@ class ProductsModel extends ConnectedProductsModel{
     _products.removeAt(selectedProductIndex);
     _selProductId=null;
     notifyListeners();
-    http.delete('https://flutter-course-443f7.firebaseio.com/products/$deletedProductId.json')
+    return http.delete('https://flutter-course-443f7.firebaseio.com/products/$deletedProductId.json')
         .then((http.Response response){
           _isLoading=false;
           notifyListeners();
-    });
+          return true;
+    })
+    .catchError((error){
+      _isLoading=false;
+      notifyListeners();
+      return false;
+    }) ;
 
   }
 
@@ -134,7 +174,7 @@ class ProductsModel extends ConnectedProductsModel{
     notifyListeners();
     return http
         .get('https://flutter-course-443f7.firebaseio.com/products.json')
-        .then( (http.Response response){
+        .then<Null>( (http.Response response){
 
 
         final List<Product> fetchedProductList=[];
@@ -162,6 +202,11 @@ _products=fetchedProductList;
         _isLoading=false;
 notifyListeners();
 _selProductId=null;
+    })
+    .catchError((error){
+      _isLoading=false;
+      notifyListeners();
+      return ;
     });
 
 
