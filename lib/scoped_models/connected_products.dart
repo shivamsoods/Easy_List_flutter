@@ -237,11 +237,50 @@ _selProductId=null;
 
 class UserModel extends ConnectedProductsModel{
 
-  void login(String email,String password){
-    _authenticatedUser=User(id:'sad', email: email, password:password);
+  Future<Map<String,dynamic>> login(String email,String password) async{
+    _isLoading=true;
+    notifyListeners();
+    final Map<String,dynamic> authData={
+      'email':email,
+      'password':password,
+      'returnSecureToken':true
+    };
+
+  final http.Response response=await http.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCheyrnUDFgup8teL7nNjpHfPcIzknRRr0',
+        body: json.encode(authData),
+        headers:{'Content-Type':'application/json'});
+
+
+
+    final Map<String,dynamic> responseData= json.decode(response.body);
+    bool hasError=true;
+    String message='Something went wrong';
+    if(responseData.containsKey('idToken')){
+      hasError=false;
+      message='Authentication success!';
+    }
+    else if(responseData['error']['message']=='EMAIL_NOT_FOUND'){
+      message=' $email not found';
+    }
+    else if(responseData['error']['message']=='INVALID_PASSWORD'){
+      message=' Invalid Password';
+    }
+    else{
+      message='Something went wrong';
+    }
+    _isLoading=false;
+    notifyListeners();
+    return {
+      'success':!hasError,
+      'message':message
+    };
+
+
   }
 
   Future<Map<String,dynamic>>signup(String email,String password) async{
+    _isLoading=true;
+    notifyListeners();
 
    final Map<String,dynamic> authData={
       'email':email,
@@ -266,6 +305,8 @@ message=' $email already exists';
    else{
      message='Something went wrong';
    }
+   _isLoading=false;
+   notifyListeners();
    return {
      'success':!hasError,
      'message':message
