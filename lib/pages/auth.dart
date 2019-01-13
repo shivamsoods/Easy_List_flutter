@@ -91,13 +91,22 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _submitForm(Function login) {
+  void _submitForm(Function login,Function signup) async{
     if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
       return;
     }
     _formKey.currentState.save();
-    login(_formData['email'], _formData['password']);
-    Navigator.pushReplacementNamed(context, '/products');
+
+    if(_authMode==AuthMode.Login){
+      login(_formData['email'], _formData['password']);
+      }else{
+      final Map<String,dynamic>successInformation=await signup(_formData['email'], _formData['password']);
+
+      if(successInformation['success']){
+        Navigator.pushReplacementNamed(context, '/products');
+
+      }
+    }
   }
 
   @override
@@ -129,7 +138,9 @@ class _AuthPageState extends State<AuthPage> {
                     SizedBox(
                       height: 10.0,
                     ),
-                    _authMode==AuthMode.Signup?_buildPasswordConfirmTextField():Container(),
+                    _authMode == AuthMode.Signup
+                        ? _buildPasswordConfirmTextField()
+                        : Container(),
                     SizedBox(
                       height: 10.0,
                     ),
@@ -146,7 +157,6 @@ class _AuthPageState extends State<AuthPage> {
                               ? AuthMode.Signup
                               : AuthMode.Login;
                         });
-
                       },
                     ),
                     SizedBox(
@@ -157,9 +167,10 @@ class _AuthPageState extends State<AuthPage> {
                           MainModel model) {
                         return RaisedButton(
                           textColor: Colors.white,
-                          child: Text(_authMode==AuthMode.Login?'LOGIN':'SIGNUP'),
+                          child: Text(
+                              _authMode == AuthMode.Login ? 'LOGIN' : 'SIGNUP'),
                           onPressed: () {
-                            _submitForm(model.login);
+                            _submitForm(model.login,model.signup);
                           },
                         );
                       },
