@@ -4,6 +4,7 @@ import 'package:flutter_course/pages/product_list.dart';
 import 'package:flutter_course/pages/product_edit.dart';
 
 import 'package:flutter_course/scoped_models/main.dart';
+import 'package:flutter_course/widgets/ty/ui_elements/logout_list_tile.dart';
 
 
 
@@ -25,7 +26,9 @@ ProductsAdminPage(this.model);
             onTap: () {
               Navigator.pushReplacementNamed(context, '/products');
             },
-          )
+          ),
+          Divider(),
+          LogoutListTile()
         ],
       ),
     );
