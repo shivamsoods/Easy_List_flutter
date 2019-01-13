@@ -12,7 +12,7 @@ class ConnectedProductsModel extends Model{
   String  _selProductId;
   bool _isLoading=false;
 
-  Future<Null> addProduct(String title,String description String image,double price) {
+  Future<bool> addProduct(String title,String description String image,double price) {
     _isLoading=true;
     notifyListeners();
 
@@ -21,12 +21,15 @@ class ConnectedProductsModel extends Model{
     'image':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaB5OgTv7gLFsVgGHqrJDW8BhWJiiFoJZutVXXKPGM-s0cXCZ',
     'price':price,'userId': _authenticatedUser.id,'userEmail':_authenticatedUser.email};
 
-    return http.post('https://flutter-course-443f7.firebaseio.com/products.json',body:json.encode(productData)).then((http.Response response){
+    return http.post('https://flutter-course-443f7.firebaseio.com/products.json',body:json.encode(productData))
+      .then((http.Response response){
 
-      _isLoading=false;
+        if(response.statusCode!=200 && response.statusCode!=201){
+          _isLoading=false;
+          notifyListeners();
+          return false;
+  }
       final Map<String,dynamic> responseData=json.decode(response.body);
-
-
   final Product newProduct= Product(id:responseData['name'],title: title, description: description,
   image: image,
   price: price,
@@ -34,6 +37,7 @@ class ConnectedProductsModel extends Model{
   userId: _authenticatedUser.id);
   _products.add(newProduct);
   notifyListeners();
+  return true;
   });
 
 
@@ -157,7 +161,9 @@ class ProductsModel extends ConnectedProductsModel{
 _products=fetchedProductList;
         _isLoading=false;
 notifyListeners();
+_selProductId=null;
     });
+
 
 
   }
