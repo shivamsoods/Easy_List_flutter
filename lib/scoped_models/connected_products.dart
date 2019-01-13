@@ -64,15 +64,37 @@ class ProductsModel extends ConnectedProductsModel{
 
 
 
-  void updateProduct(String title,String description String image,double price) {
-  final Product updatedProduct= Product(id:'kol',
+  Future<Null> updateProduct(String title,String description String image,double price) {
+    _isLoading=true;
+    notifyListeners();
+
+    Map<String,dynamic> updateData={
+      'title':title,
+      'description':description,
+      'image':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaB5OgTv7gLFsVgGHqrJDW8BhWJiiFoJZutVXXKPGM-s0cXCZ',
+      'price':price,
+      'userEmail': selectedProduct.userEmail,
+      'userId': selectedProduct.userId
+  };
+   return http.put('https://flutter-course-443f7.firebaseio.com/products/${selectedProduct.id}.json',body: json.encode(updateData))
+      .then((http.Response response){
+        _isLoading=false;
+
+        final Product updatedProduct= Product(
+  id:selectedProduct.id,
   title: title,
   description: description,
   image: image,
   price: price,
   userEmail: selectedProduct.userEmail,
   userId: selectedProduct.userId);
+
   _products[selectedProductIndex] = updatedProduct;
+  notifyListeners();
+
+  });
+
+
 
   }
 
