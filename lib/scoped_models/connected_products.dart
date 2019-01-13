@@ -57,7 +57,8 @@ class ProductsModel extends ConnectedProductsModel{
 
 
     try{
-      final http.Response response=await http.post('https://flutter-course-443f7.firebaseio.com/products.json', body:json.encode(productData));
+      final http.Response response=await http.post('https://flutter-course-443f7.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
+          body:json.encode(productData));
 
 
       if(response.statusCode!=200 && response.statusCode!=201){
@@ -96,7 +97,8 @@ class ProductsModel extends ConnectedProductsModel{
       'userEmail': selectedProduct.userEmail,
       'userId': selectedProduct.userId
   };
-   return http.put('https://flutter-course-443f7.firebaseio.com/products/${selectedProduct.id}.json',body: json.encode(updateData))
+   return http.put('https://flutter-course-443f7.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
+  body: json.encode(updateData))
       .then((http.Response response){
         _isLoading=false;
 
@@ -136,7 +138,7 @@ return true;
     _products.removeAt(selectedProductIndex);
     _selProductId=null;
     notifyListeners();
-    return http.delete('https://flutter-course-443f7.firebaseio.com/products/$deletedProductId.json')
+    return http.delete('https://flutter-course-443f7.firebaseio.com/products/$deletedProductId.json?auth=${_authenticatedUser.token}')
         .then((http.Response response){
           _isLoading=false;
           notifyListeners();
@@ -154,7 +156,7 @@ return true;
     _isLoading=true;
     notifyListeners();
     return http
-        .get('https://flutter-course-443f7.firebaseio.com/products.json')
+        .get('https://flutter-course-443f7.firebaseio.com/products.json?auth=${_authenticatedUser.token}')
         .then<Null>( (http.Response response){
 
 
@@ -268,6 +270,7 @@ class UserModel extends ConnectedProductsModel{
     if(responseData.containsKey('idToken')){
       hasError=false;
       message='Authentication success!';
+      _authenticatedUser=User(id: responseData['localId'], email: email, token: responseData['idToken']);
     }
     else if(responseData['error']['message']=='EMAIL_NOT_FOUND'){
       message=' $email not found';
