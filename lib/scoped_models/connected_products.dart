@@ -5,6 +5,7 @@ import 'package:flutter_course/models/user.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart'as http;
+import 'package:flutter_course/models/auth.dart';
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -237,7 +238,7 @@ _selProductId=null;
 
 class UserModel extends ConnectedProductsModel{
 
-  Future<Map<String,dynamic>> login(String email,String password) async{
+  Future<Map<String,dynamic>> authenticate(String email,String password,[AuthMode mode=AuthMode.Login]) async{
     _isLoading=true;
     notifyListeners();
     final Map<String,dynamic> authData={
@@ -245,10 +246,19 @@ class UserModel extends ConnectedProductsModel{
       'password':password,
       'returnSecureToken':true
     };
+    http.Response response;
+    if(mode==AuthMode.Login){
+      response=await http.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCheyrnUDFgup8teL7nNjpHfPcIzknRRr0',
+          body: json.encode(authData),
+          headers:{'Content-Type':'application/json'});
+    }
+    else{
 
-  final http.Response response=await http.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCheyrnUDFgup8teL7nNjpHfPcIzknRRr0',
-        body: json.encode(authData),
-        headers:{'Content-Type':'application/json'});
+      response=await  http.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCheyrnUDFgup8teL7nNjpHfPcIzknRRr0',
+          body: json.encode(authData),
+          headers:{'Content-Type':'application/json'});
+    }
+
 
 
 
@@ -265,6 +275,9 @@ class UserModel extends ConnectedProductsModel{
     else if(responseData['error']['message']=='INVALID_PASSWORD'){
       message=' Invalid Password';
     }
+    else if(responseData['error']['message']=='EMAIL_EXISTS'){
+      message=' $email already exists';
+    }
     else{
       message='Something went wrong';
     }
@@ -278,41 +291,6 @@ class UserModel extends ConnectedProductsModel{
 
   }
 
-  Future<Map<String,dynamic>>signup(String email,String password) async{
-    _isLoading=true;
-    notifyListeners();
-
-   final Map<String,dynamic> authData={
-      'email':email,
-     'password':password,
-     'returnSecureToken':true
-    };
-   final http.Response response=await  http.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCheyrnUDFgup8teL7nNjpHfPcIzknRRr0',
-     body: json.encode(authData),
-   headers:{'Content-Type':'application/json'});
-
-   print(response.body);
-final Map<String,dynamic> responseData= json.decode(response.body);
- bool hasError=true;
- String message='Something went wrong';
-   if(responseData.containsKey('idToken')){
-     hasError=false;
-     message='Authentication success!';
-   }
-   else if(responseData['error']['message']=='EMAIL_EXISTS'){
-message=' $email already exists';
-   }
-   else{
-     message='Something went wrong';
-   }
-   _isLoading=false;
-   notifyListeners();
-   return {
-     'success':!hasError,
-     'message':message
-   };
-
-   }
 
 }
 
