@@ -8,6 +8,7 @@ import 'package:http/http.dart'as http;
 import 'package:flutter_course/models/auth.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rxdart/subjects.dart';
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -242,6 +243,14 @@ _selProductId=null;
 
 class UserModel extends ConnectedProductsModel{
   Timer _authTimer;
+
+  PublishSubject<bool>_userSubject=PublishSubject();
+
+  PublishSubject<bool> get userSubject{
+    return _userSubject;
+  }
+
+
   User get user {return _authenticatedUser;}
 
   Future<Map<String,dynamic>> authenticate(String email,String password,[AuthMode mode=AuthMode.Login]) async{
@@ -276,6 +285,8 @@ class UserModel extends ConnectedProductsModel{
       message='Authentication success!';
       _authenticatedUser=User(id: responseData['localId'], email: email, token: responseData['idToken']);
       setAuthTimeout(int.parse(responseData['expiresIn']));
+      _userSubject.add(true);
+
 
       final DateTime now = DateTime.now();
       final DateTime expiryTime =  now.add(Duration(seconds: int.parse(responseData['expiresIn'])));
@@ -326,6 +337,7 @@ class UserModel extends ConnectedProductsModel{
        final String userId=prefs.getString('userId');
        final int tokenLifeSpan= parsedExpiryTime.difference(now).inSeconds;
        _authenticatedUser=User(id: userId, email: userEmail, token: token);
+       _userSubject.add(true);
        setAuthTimeout(tokenLifeSpan);
        notifyListeners();
      }
@@ -338,10 +350,13 @@ class UserModel extends ConnectedProductsModel{
     prefs.remove('token');
     prefs.remove('userEmail');
     prefs.remove('userId');
-    }
+  }
 
     void setAuthTimeout(int time){
-    _authTimer=Timer(Duration(seconds: time),logout);
+    _authTimer=Timer(Duration(seconds: time),(){
+      logout();
+    _userSubject.add(false);
+    });
 
     }
 
