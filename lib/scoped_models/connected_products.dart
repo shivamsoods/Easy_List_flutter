@@ -207,9 +207,10 @@ _selProductId=null;
     return _selProductId;
   }
 
-  void toggleProductFavouriteStatus() {
+  void toggleProductFavouriteStatus() async{
     final bool isCurrentlyFavourite = selectedProduct.isFavourite;
     final bool newFavouriteStatus = !isCurrentlyFavourite;
+
 
     final Product updatedProduct = Product(
         id: selectedProduct.id,
@@ -222,8 +223,33 @@ _selProductId=null;
         isFavourite: newFavouriteStatus);
 
     _products[selectedProductIndex] = updatedProduct;
-
     notifyListeners();
+     http.Response response;
+    if(newFavouriteStatus){
+       response = await http.put('https://flutter-course-443f7.firebaseio.com/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?=auth=${_authenticatedUser.token}',
+      body: json.encode(true));
+    }
+    else{
+      response=await http.delete('https://flutter-course-443f7.firebaseio.com/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?=auth=${_authenticatedUser.token}');
+    }
+
+
+    if(response.statusCode !=200&&response.statusCode !=201 ){
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: selectedProduct.title,
+          description: selectedProduct.description,
+          price: selectedProduct.price,
+          image: selectedProduct.image,
+          userEmail: selectedProduct.userEmail,
+          userId: selectedProduct.userId,
+          isFavourite: !newFavouriteStatus);
+
+      _products[selectedProductIndex] = updatedProduct;
+
+      notifyListeners();
+    }
+
   }
 
   Product get selectedProduct {
@@ -346,6 +372,8 @@ class UserModel extends ConnectedProductsModel{
     void logout()async{
     _authenticatedUser=null;
     _authTimer.cancel();
+    _userSubject.add(false);
+
     final SharedPreferences prefs=await  SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('userEmail');
@@ -355,7 +383,6 @@ class UserModel extends ConnectedProductsModel{
     void setAuthTimeout(int time){
     _authTimer=Timer(Duration(seconds: time),(){
       logout();
-    _userSubject.add(false);
     });
 
     }
