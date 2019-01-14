@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter_course/models/product.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_course/scoped_models/main.dart';
+import 'package:flutter_course/widgets/ty/form_inputs/image.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -112,6 +113,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
+              ImageInput(),
+              SizedBox(height: 10.0),
               _buildSubmitButton(context),
             ],
           ),
