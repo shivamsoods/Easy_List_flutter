@@ -155,7 +155,7 @@ return true;
 
   }
 
-  Future<Null> fetchProducts(){
+  Future<Null> fetchProducts({onlyForUser=false}){
     _isLoading=true;
     notifyListeners();
     return http
@@ -180,13 +180,20 @@ return true;
             , image: productData['image'],
             price: productData['price'],
             userEmail: productData['userEmail'],
-            userId: productData['userId']);
+            userId: productData['userId'],
+        isFavourite:productData['whislistUsers'] ==null?false:(productData['whislistUsers'] as Map<String,dynamic>).containsKey(_authenticatedUser.id));
 
         fetchedProductList.add(product);
       });
-_products=fetchedProductList;
-        _isLoading=false;
-notifyListeners();
+
+
+      _products=onlyForUser?fetchedProductList.where((Product product){return product.userId==_authenticatedUser.id;}).toList():fetchedProductList;
+
+
+      _isLoading=false;
+
+
+        notifyListeners();
 _selProductId=null;
     })
     .catchError((error){
