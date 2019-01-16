@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "flutter-course-443f7",
+  "private_key_id": "7f6977a94b76ff88e466d0ceb413c63576417fd5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6ckTn9Z2o/Ncg\nTaloUyAyzK2rDkIzGfiSgZybEEDMSC+yvOr6F4s8W1iAeQ2sWZq2Im+UZS5cGJ/w\n7DRQXM+zDJKI54CCKHuGTHNlJLJhBsj4Nu7QU/yCCqiEXI8p9c/EdQzWwyNcaj+D\nvWmcQCZVESRrAeBnJBVcgQF54N3abQF3FUtaDxzWmzWhN2oDpUrFlgERs84v+/6m\nofszLH1JGF1Ox0/c07+8pvu8ZqPlV/sCJXVA6lJRo2GZbLVq4yMjKBXJe30xVCtT\n0FlP3d4HIxMMUleh57np0WA25HUUJDlEdzxa6vqP3Uwvx0Byd5FHKmxGAl1IGrHb\n/McKAdV7AgMBAAECggEABtn6JEKyDNVgcRnJgZbvFk7P4aWq0xvqNuANHuRQV/Fz\nJ0X/+zlwRBiLPmAJxkKeB9a+HkhAQDbQxywMRBkVB4cNFNDaYm4VvqVX5uib/CrL\n/ysYSDmTNugosdcrlPwpKsFZERn8q6xlMcnSdAvQx3bTeByKit/C6oenGTvP4J3p\neC1jGwdz/nF1kceW4YbBb0Tn5H07PSEaP6N89nNsWAYD83vNESATJLBpC+hcLhN6\na6VS1C0R82hg/2m8VO7vtD9qKaSyMPopuVD8S7HeoTRmGlR6+2WtyWgkpM09VcJW\nwTWUkcqzjF2N0whrR3g4OmaHCDqMl83eDTKQCgalaQKBgQDcE5krc76kRlA+ySQO\nZ7G3mhX++CdU+xGnq0SsE0kGIzn2DTySK/D+2Wjlsz2f7wBhXj05G0IPcubvr/fK\nalNryXiz3Q1aiPpWZ+W+pULzk0F888AJASC36GvuXiMuAw+211/cArPsXj8zd5cJ\nSpXsmiQjoZ1+QJxcROY97K5hfwKBgQDY4Vs/o23go9a+hDCgMbpbAbltWPWzmLpc\nAWFtG2INXqoSe9rUscq8skBYr51Ls8PveudMdrzVgoqDS8Zeef7fA+PrtugcmRPH\nKIBiHVqAHJucHOc0q0QZvHO3+Tk806y+bQ5CHdQyrqXoL3a6ewYirctrdnuIE2Kk\nNUOv2cESBQKBgGRtBQ5RCQPJmkCsZKm2I+DWjYcGElyzHUFX5ERpoH8OgBqJu8Qw\nDQ8egsGe41YiKBhGesWebKzEECH8OKTDlEGxdEUPcFKKA0J+stYmb8Dax52PVWhG\nfXmus+HYT1Fl0DvtWC77hMMt1sVTozZ4NKX9SNSBoW7FaRSp1C8Z3BFdAoGBAL0a\nKczgO/MOCDUP37IeCeZGJ57vXTTea0fDsGZI5QLRUqtRMOoZp7NGHRL29MjIEoSh\n/kFOmrHz48A9dtZzusZLhxTE47fjxTn215I1E+72grvo+7ORzYw/JAr6lGy0CD/1\nqOP/TEFwxJohoH1SvXPJY7/sjCOG+5BAHSecT1rdAoGBAM0hp6YNBpkKkIRZnf6T\nhiXoMvvDwUZ9txOnIC1ZK2o/OzKtfmVL8b3qMSN9IqSo5e1V4BjtKUfzQ1uFL7t/\ng+fEntQpt9RCHxVVvbRhgZe3hF6ixx7fl/YsVRk6klE1syQGIEEPgWTsa6L5WxL9\na4IJgO4M66peGRXn7Icincta\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-s5feb@flutter-course-443f7.iam.gserviceaccount.com",
+  "client_id": "109563360820075873010",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-s5feb%40flutter-course-443f7.iam.gserviceaccount.com"
+}

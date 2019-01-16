@@ -2,11 +2,13 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_course/models/product.dart';
 import 'package:flutter_course/models/user.dart';
 
+import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart'as http;
 import 'package:flutter_course/models/auth.dart';
-
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -47,15 +49,55 @@ class ProductsModel extends ConnectedProductsModel{
   });
   }
 
-  Future<bool> addProduct(String title, String description,String image,double price) async {
+  Future<Map<String,dynamic>>uploadImage(File image,{String imagePath})async{
+    final mimeTypeData=lookupMimeType(image.path).split('/');
+    final imageUploadRequest=http.MultipartRequest('POST',Uri.parse('https://us-central1-flutter-course-443f7.cloudfunctions.net/storeImage'));
+    final file = await http.MultipartFile.fromPath('image', image.path,contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+
+    imageUploadRequest.files.add(file);
+
+    if(imagePath!=null){
+      imageUploadRequest.fields['imagePath']=Uri.encodeComponent(imagePath);
+    }
+
+    imageUploadRequest.headers['Authorization']='Bearer ${_authenticatedUser.token}';
+
+    try{
+      final streamedResponse=await  imageUploadRequest.send();
+       final response=await http.Response.fromStream(streamedResponse);
+
+      if(response.statusCode!=200 && response.statusCode!=201){
+        print('Something went wrong');
+
+        print(json.decode(response.body));
+        return null;
+      }
+
+      final responseData=json.decode(response.body);
+
+      return responseData;
+
+    }
+    catch(error){
+      print(error);
+      return null;
+    }
+  }
+
+  Future<bool> addProduct(String title, String description,File image,double price) async {
     _isLoading=true;
     notifyListeners();
+    //final uploadData=await uploadImage(image);
+
+
 
     final Map<String, dynamic> productData={
       'title':title,
       'description':description,
       'image':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaB5OgTv7gLFsVgGHqrJDW8BhWJiiFoJZutVXXKPGM-s0cXCZ',
-      'price':price, 'userId': _authenticatedUser.id, 'userEmail':_authenticatedUser.email
+      'price':price,
+      'userId': _authenticatedUser.id,
+      'userEmail':_authenticatedUser.email,
     };
 
 
@@ -69,9 +111,10 @@ class ProductsModel extends ConnectedProductsModel{
         notifyListeners();
         return false;
       }
+
       final Map<String, dynamic> responseData=json.decode(response.body);
       final Product newProduct= Product(id:responseData['name'], title: title, description: description,
-          image: image,
+          image: 'assets/food.jpg',
           price: price,
           userEmail: _authenticatedUser.email,
           userId: _authenticatedUser.id);
@@ -242,6 +285,7 @@ _selProductId=null;
 
 
     if(response.statusCode !=200&&response.statusCode !=201 ){
+
       final Product updatedProduct = Product(
           id: selectedProduct.id,
           title: selectedProduct.title,
@@ -301,7 +345,6 @@ class UserModel extends ConnectedProductsModel{
           headers:{'Content-Type':'application/json'});
     }
     else{
-
       response=await  http.post('https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCheyrnUDFgup8teL7nNjpHfPcIzknRRr0',
           body: json.encode(authData),
           headers:{'Content-Type':'application/json'});

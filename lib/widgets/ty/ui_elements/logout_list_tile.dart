@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_course/scoped_models/connected_products.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_course/scoped_models/main.dart';
 

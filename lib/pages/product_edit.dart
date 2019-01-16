@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_course/models/product.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -18,7 +18,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/food.jpg'
+    'image': null
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -113,7 +113,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
-              ImageInput(),
+              ImageInput(_setImage,product),
               SizedBox(height: 10.0),
               _buildSubmitButton(context),
             ],
@@ -121,6 +121,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
         ),
       ),
     );
+  }
+
+
+  void _setImage(File image){
+    _formData['image']=image;
   }
 
   void _submitForm(

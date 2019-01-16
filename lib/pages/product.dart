@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_course/widgets/ty/ui_elements/title_default.dart';
-import 'package:flutter_course/scoped_models/main.dart';
-import 'package:scoped_model/scoped_model.dart';
-
+import 'package:flutter_course/widgets/ty/products/product_fab.dart';
 import 'package:flutter_course/models/product.dart';
 
 class ProductPage extends StatelessWidget {
@@ -67,6 +65,7 @@ class ProductPage extends StatelessWidget {
             )
           ],
         ),
+        floatingActionButton: ProductFAB(product),
       ),
     );
   }
