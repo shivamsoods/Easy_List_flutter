@@ -198,8 +198,11 @@ return true;
 
   }
 
-  Future<Null> fetchProducts({onlyForUser=false}){
+  Future<Null> fetchProducts({onlyForUser=false,clearExisting=false}){
     _isLoading=true;
+    if(clearExisting){
+      _products=[];
+    }
     notifyListeners();
     return http
         .get('https://flutter-course-443f7.firebaseio.com/products.json?auth=${_authenticatedUser.token}')
@@ -299,6 +302,7 @@ _selProductId=null;
       _products[selectedProductIndex] = updatedProduct;
 
       notifyListeners();
+    _selProductId=null;
     }
 
   }
@@ -423,6 +427,7 @@ class UserModel extends ConnectedProductsModel{
     _authenticatedUser=null;
     _authTimer.cancel();
     _userSubject.add(false);
+    _selProductId=null;
 
     final SharedPreferences prefs=await  SharedPreferences.getInstance();
     prefs.remove('token');
