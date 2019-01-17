@@ -1,6 +1,8 @@
-# flutter_course
+# Flutter Course
 
-A new Flutter application.
+A new and simple Flutter application to add, view, update and delete products.
+This is just a learning app to know all the basic concepts of Flutter and develop various new applications on that knowledge.
+
 
 ## Getting Started
 
