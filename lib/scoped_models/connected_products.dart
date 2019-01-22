@@ -11,6 +11,8 @@ import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -49,52 +51,27 @@ class ProductsModel extends ConnectedProductsModel{
   });
   }
 
-  Future<Map<String,dynamic>>uploadImage(File image,{String imagePath})async{
-    final mimeTypeData=lookupMimeType(image.path).split('/');
-    final imageUploadRequest=http.MultipartRequest('POST',Uri.parse('https://us-central1-flutter-course-443f7.cloudfunctions.net/storeImage'));
-    final file = await http.MultipartFile.fromPath('image', image.path,contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+  Future<String>uploadImage(File image,{String imagePath})async{
 
-    imageUploadRequest.files.add(file);
+    final StorageReference firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('img_course_flutter').child('${(_authenticatedUser.id).toString()}.jpg');
+    final StorageUploadTask task =  firebaseStorageRef.putFile(image);
 
-    if(imagePath!=null){
-      imageUploadRequest.fields['imagePath']=Uri.encodeComponent(imagePath);
-    }
-
-    imageUploadRequest.headers['Authorization']='Bearer ${_authenticatedUser.token}';
-
-    try{
-      final streamedResponse=await  imageUploadRequest.send();
-       final response=await http.Response.fromStream(streamedResponse);
-
-      if(response.statusCode!=200 && response.statusCode!=201){
-        print('Something went wrong');
-
-        print(json.decode(response.body));
-        return null;
-      }
-
-      final responseData=json.decode(response.body);
-
-      return responseData;
-
-    }
-    catch(error){
-      print(error);
-      return null;
-    }
+    var downloadUrl = await(await task.onComplete).ref.getDownloadURL();
+    return downloadUrl.toString();
   }
 
   Future<bool> addProduct(String title, String description,File image,double price) async {
     _isLoading=true;
     notifyListeners();
-    //final uploadData=await uploadImage(image);
+    final uploadDataImage=await uploadImage(image);
 
 
 
     final Map<String, dynamic> productData={
       'title':title,
       'description':description,
-      'image':'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnaB5OgTv7gLFsVgGHqrJDW8BhWJiiFoJZutVXXKPGM-s0cXCZ',
+      'image':uploadDataImage,
       'price':price,
       'userId': _authenticatedUser.id,
       'userEmail':_authenticatedUser.email,
@@ -113,8 +90,9 @@ class ProductsModel extends ConnectedProductsModel{
       }
 
       final Map<String, dynamic> responseData=json.decode(response.body);
+
       final Product newProduct= Product(id:responseData['name'], title: title, description: description,
-          image: 'assets/food.jpg',
+          image: uploadDataImage,
           price: price,
           userEmail: _authenticatedUser.email,
           userId: _authenticatedUser.id);

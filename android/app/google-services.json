@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "1020057743111",
+    "firebase_url": "https://flutter-course-443f7.firebaseio.com",
+    "project_id": "flutter-course-443f7",
+    "storage_bucket": "flutter-course-443f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020057743111:android:a27483906a84e3a7",
+        "android_client_info": {
+          "package_name": "com.arihantas.skeleton"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020057743111-8m4suous465ihkbqakl5rl85mdevllmr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS5nKnBrRQISez1g_aNZ1WgzRf8vUWD-o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020057743111:android:e8b58e8fe543f14e",
+        "android_client_info": {
+          "package_name": "com.example.shivam.fluttercourse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020057743111-8m4suous465ihkbqakl5rl85mdevllmr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS5nKnBrRQISez1g_aNZ1WgzRf8vUWD-o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020057743111:android:626d16327624ddd8",
+        "android_client_info": {
+          "package_name": "com.flutter.shivam.imageupload"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020057743111-8m4suous465ihkbqakl5rl85mdevllmr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAS5nKnBrRQISez1g_aNZ1WgzRf8vUWD-o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
